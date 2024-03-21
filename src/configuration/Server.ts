@@ -3,6 +3,9 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import express from "express";
 import Connection from "./Connection";
+import apiTalentRoute from "../route/TalentRoute";
+import apiGenerationRoute from "../route/GenerationRoute";
+import apiBranchRoute from "../route/BranchRoute";
 
 class Server {
     public app:express.Application;
@@ -21,11 +24,13 @@ class Server {
         this.app.use(morgan("dev"));
         this.app.use(express.json({ limit:"50MB" }));
         this.app.use(express.urlencoded({ extended:true }));
-    }
+    };
 
     public startRoutes() {
-
-    }
+        this.app.use("/talents", apiTalentRoute);
+        this.app.use("/generations", apiGenerationRoute);
+        this.app.use("/branches", apiBranchRoute);
+    };
 
     public startServer() {
         this.app.listen(this.app.get("PORT"), ()=>{
