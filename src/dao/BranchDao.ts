@@ -7,7 +7,7 @@ class BranchDao {
     protected static async getBranches(res:Response):Promise<any> {
         try{
             const data = await BranchSchema.find()
-            .sort({ _id:1 })
+            .sort({ name:1 })
             .populate({
                 path: "generationsBranch",
                 select: "name",
@@ -81,11 +81,11 @@ class BranchDao {
             .populate({
                 path: "generationsBranch",
                 select: "name",
-                options: {sort: { _id:1 }}
-            })
-            .populate({
-                path: "generationsBranch.talentsGeneration",
-                options: {sort: { _id:1, isAlum:1 }}
+                options: {sort: { _id:1 }},
+                populate: {
+                    path: "talentsGeneration",
+                    options: {sort: { isAlum:1 }}
+                }
             })
             .exec();
 
@@ -106,11 +106,11 @@ class BranchDao {
             .populate({
                 path: "generationsBranch",
                 select: "name",
-                options: {sort: { _id:1 }}
-            })
-            .populate({
-                path: "generationsBranch.talentsGeneration",
-                options: {sort: { _id:1, isAlum:1 }}
+                options: {sort: { _id:1 }},
+                populate: {
+                    path: "talentsGeneration",
+                    options: {sort: { isAlum:1 }}
+                }
             })
             .exec();
 

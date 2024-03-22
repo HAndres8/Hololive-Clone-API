@@ -11,7 +11,7 @@ class GenerationDao {
             .populate({
                 path: "talentsGeneration",
                 select: "name nameJP",
-                options: {sort: { _id:1, isAlum:1 }}
+                options: {sort: { isAlum:1 }}
             })
             .exec();
 
@@ -78,7 +78,7 @@ class GenerationDao {
             const data = await GenerationSchema.findOne({ "name": name })
             .populate({
                 path: "talentsGeneration",
-                options: {sort: { _id:1, isAlum:1 }}
+                options: {sort: { isAlum:1 }}
             })
             .exec();
 
