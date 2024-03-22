@@ -54,8 +54,16 @@ class TalentDao {
     protected static async updateTalents(id:any, params:any, res:Response):Promise<any> {
         try{
             const upd = await TalentSchema.findByIdAndUpdate(id, params, {new:true}).exec();
+            const alum = params.isAlum;
 
             if(upd){
+                if(alum){
+                    GenerationSchema.findOneAndUpdate({name: 'alum'},
+                                                      {$push: {"talentsGeneration": id} }).exec();
+                }else{
+                    GenerationSchema.findOneAndUpdate({name: 'alum'},
+                                                      {$pull: {"talentsGeneration": id} }).exec();
+                }
                 res.status(200).json({ response:'Talent updated', updated:upd });
             }else{
                 res.status(400).json({ response:'Talent could not be found' });
