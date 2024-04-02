@@ -4,6 +4,7 @@ import GenerationSchema from "../schema/GenerationSchema";
 import BranchSchema from "../schema/BranchSchema";
 
 class GenerationDao {
+    // obtain all generations with their talents
     protected static async getGenerations(res:Response):Promise<any> {
         try{
             const data = await GenerationSchema.find()
@@ -22,6 +23,7 @@ class GenerationDao {
         }
     }
 
+    // create one generation
     protected static async createGenerations(params:any, res:Response):Promise<any> {
         const exist = await GenerationSchema.findOne(params);
 
@@ -39,6 +41,7 @@ class GenerationDao {
         }
     }
 
+    // delete one generation
     protected static async deleteGenerations(id:any, res:Response):Promise<any> {
         try{
             const del = await GenerationSchema.findByIdAndDelete(id).exec();
@@ -59,6 +62,7 @@ class GenerationDao {
         }
     }
 
+    // update one generation
     protected static async updateGenerations(id:any, params:any, res:Response):Promise<any> {
         try{
             const upd = await GenerationSchema.findByIdAndUpdate(id, params, {new:true}).exec();
@@ -73,6 +77,7 @@ class GenerationDao {
         }
     }
 
+    // search for a generation based on name
     protected static async searchGeneration(name:any, res:Response):Promise<any> {
         try{
             const data = await GenerationSchema.findOne({ "name": name })

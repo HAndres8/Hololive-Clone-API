@@ -4,6 +4,7 @@ import GenerationSchema from "../schema/GenerationSchema";
 import BranchSchema from "../schema/BranchSchema";
 
 class BranchDao {
+    // obtain all branches with their generations
     protected static async getBranches(res:Response):Promise<any> {
         try{
             const data = await BranchSchema.find()
@@ -21,6 +22,7 @@ class BranchDao {
         }
     }
 
+    // create one branch
     protected static async createBranches(params:any, res:Response):Promise<any> {
         const exist = await BranchSchema.findOne(params);
 
@@ -38,6 +40,7 @@ class BranchDao {
         }
     }
 
+    // delete one branch
     protected static async deleteBranches(id:any, res:Response):Promise<any> {
         try{
             const del = await BranchSchema.findByIdAndDelete(id).exec();
@@ -61,6 +64,7 @@ class BranchDao {
         }
     }
 
+    // update one branch
     protected static async updateBranches(id:any, params:any, res:Response):Promise<any> {
         try{
             const upd = await BranchSchema.findByIdAndUpdate(id, params, {new:true}).exec();
@@ -75,6 +79,7 @@ class BranchDao {
         }
     }
 
+    // search for a branch based on name
     protected static async searchBranch(name:any, res:Response):Promise<any> {
         try{
             const data = await BranchSchema.findOne({ "name": name })
@@ -99,6 +104,7 @@ class BranchDao {
         }
     }
     
+    // obtain all branches with their generations and talents
     protected static async allBranches(res:Response):Promise<any> {
         try{
             const data = await BranchSchema.find()

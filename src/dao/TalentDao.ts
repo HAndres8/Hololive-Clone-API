@@ -3,6 +3,7 @@ import TalentSchema from "../schema/TalentSchema";
 import GenerationSchema from "../schema/GenerationSchema";
 
 class TalentDao {
+    // obtain all talents
     protected static async getTalents(res:Response):Promise<any> {
         try{
             const data = await TalentSchema.find().sort({ name:1 });
@@ -12,6 +13,7 @@ class TalentDao {
         }
     }
 
+    // create one talent
     protected static async createTalents(params:any, res:Response):Promise<any> {
         const alum = params.isAlum;
         const exist = await TalentSchema.findOne(params);
@@ -34,6 +36,7 @@ class TalentDao {
         }
     }
 
+    // delete one talent
     protected static async deleteTalents(id:any, res:Response):Promise<any> {
         try{
             const del = await TalentSchema.findByIdAndDelete(id).exec();
@@ -51,6 +54,7 @@ class TalentDao {
         }
     }
 
+    // update one talent
     protected static async updateTalents(id:any, params:any, res:Response):Promise<any> {
         try{
             const upd = await TalentSchema.findByIdAndUpdate(id, params, {new:true}).exec();
