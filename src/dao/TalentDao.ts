@@ -15,11 +15,11 @@ class TalentDao {
 
     // create one talent
     protected static async createTalents(params:any, res:Response):Promise<any> {
-        const alum = params.isAlum;
+        const active = params.isActive;
         const exist = await TalentSchema.findOne(params);
 
-        if(alum){
-            res.status(400).json({ response:'An Alum created for the first time is not allowed' });
+        if(!active){
+            res.status(400).json({ response:'An inactive talent created for the first time is not allowed' });
         }else{
             if(exist){
                 res.status(400).json({ response:'The talent alredy exist' });
@@ -58,10 +58,11 @@ class TalentDao {
     protected static async updateTalents(id:any, params:any, res:Response):Promise<any> {
         try{
             const upd = await TalentSchema.findByIdAndUpdate(id, params, {new:true}).exec();
-            const alum = params.isAlum;
-
+            const gen = await GenerationSchema.findOne({"talentsGeneration": id}).exec();
+            const active = params.isActive;
+            
             if(upd){
-                if(alum){
+                if(!active && gen?.name!='staff'){
                     GenerationSchema.findOneAndUpdate({name: 'alum'},
                                                       {$push: {"talentsGeneration": id} }).exec();
                 }else{

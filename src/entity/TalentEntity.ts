@@ -1,14 +1,14 @@
 export class TalentEntity {
     public name: string;
     public nameJP: string;
-    public isAlum: boolean;
+    public isActive: boolean;
     public image: string;
 
-    constructor(name:string, namejp:string, alum:boolean, img:string)
+    constructor(name:string, namejp:string, img:string, active:boolean)
     {
         this.name = name;
         this.nameJP = namejp;
-        this.isAlum = alum;
+        this.isActive = active;
         this.image = img;
     }
 }
