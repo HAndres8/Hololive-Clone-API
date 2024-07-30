@@ -16,9 +16,9 @@ class BranchDao {
             })
             .exec();
 
-            res.status(200).json(data);
+            return res.status(200).json(data);
         }catch(error){
-            res.status(400).json({ response:'Branches could not be found' });
+            return res.status(400).json({ response:'Branches could not be found' });
         }
     }
 
@@ -27,17 +27,18 @@ class BranchDao {
         const exist = await BranchSchema.findOne(params);
 
         if(exist){
-            res.status(400).json({ response:'The branch alredy exist' });
-        }else{
-            const myBranch = new BranchSchema(params);
-            myBranch.save()
-            .then(() => {
-                res.status(200).json({ response:"Branch created", generation:myBranch });
-            })
-            .catch(() => {
-                res.status(400).json({ response:"Error creating branch" });
-            });
+            return res.status(400).json({ response:'The branch alredy exist' });
         }
+        
+        const myBranch = new BranchSchema(params);
+        myBranch.save()
+        .then(() => {
+            return res.status(200).json({ response:"Branch created", generation:myBranch });
+        })
+        .catch(() => {
+            return res.status(400).json({ response:"Error creating branch" });
+        });
+        
     }
 
     // delete one branch
@@ -45,22 +46,22 @@ class BranchDao {
         try{
             const del = await BranchSchema.findByIdAndDelete(id).exec();
 
-            if(del){
-                const gen = await GenerationSchema.find({ _id: del.generationsBranch });
-                // Array of ids because there are many generations
-                const idTal = gen.map(gen => gen.talentsGeneration);
-
-                // Eliminate all affiliated generations
-                await GenerationSchema.deleteMany({_id: del.generationsBranch}).exec();
-                // Eliminate all affiliated talents
-                await TalentSchema.deleteMany({_id: {$in: idTal} }).exec();
+            if(!del){
+                return res.status(400).json({ response:'Branch could not be found' });
                 
-                res.status(200).json({ response:'Branch deleted', deleted:del });
-            }else{
-                res.status(400).json({ response:'Branch could not be found' });
             }
+
+            const gen = await GenerationSchema.find({ _id: del.generationsBranch });
+            // Array of ids because there are many generations
+            const idTal = gen.map(gen => gen.talentsGeneration);
+            // Eliminate all affiliated generations
+            await GenerationSchema.deleteMany({_id: del.generationsBranch}).exec();
+            // Eliminate all affiliated talents
+            await TalentSchema.deleteMany({_id: {$in: idTal} }).exec();
+            
+            return res.status(200).json({ response:'Branch deleted', deleted:del });
         }catch(error){
-            res.status(400).json({ response:'Branch could not be eliminated' });
+            return res.status(400).json({ response:'Branch could not be eliminated' });
         }
     }
 
@@ -70,12 +71,12 @@ class BranchDao {
             const upd = await BranchSchema.findByIdAndUpdate(id, params, {new:true}).exec();
 
             if(upd){
-                res.status(200).json({ response:'Branch updated', updated:upd });
+                return res.status(200).json({ response:'Branch updated', updated:upd });
             }else{
-                res.status(400).json({ response:'Branch could not be found' });
+                return res.status(400).json({ response:'Branch could not be found' });
             }
         }catch(error){
-            res.status(400).json({ response:'Branch could not be updated' });
+            return res.status(400).json({ response:'Branch could not be updated' });
         }
     }
 
@@ -89,18 +90,18 @@ class BranchDao {
                 options: {sort: { _id:1 }},
                 populate: {
                     path: "talentsGeneration",
-                    options: {sort: { isAlum:1 }}
+                    options: {sort: { isActive:1 }}
                 }
             })
             .exec();
 
-            if(data){
-                res.status(200).json(data);
-            }else{
-                res.status(400).json({ response:'The branch does not exist' });
+            if(!data){
+                return res.status(400).json({ response:'The branch does not exist' });
             }
+
+            return res.status(200).json(data);
         }catch(error){
-            res.status(400).json({ response:'Branch could not be found' });
+            return res.status(400).json({ response:'Branch could not be found' });
         }
     }
     
@@ -115,14 +116,14 @@ class BranchDao {
                 options: {sort: { _id:1 }},
                 populate: {
                     path: "talentsGeneration",
-                    options: {sort: { isAlum:1 }}
+                    options: {sort: { isActive:1 }}
                 }
             })
             .exec();
 
-            res.status(200).json(data);
+            return res.status(200).json(data);
         }catch(error){
-            res.status(400).json({ response:'Branches could not be found' });
+            return res.status(400).json({ response:'Branches could not be found' });
         }
     }
 };

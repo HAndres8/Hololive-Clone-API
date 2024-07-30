@@ -12,14 +12,14 @@ class GenerationDao {
             .populate({
                 path: "talentsGeneration",
                 select: "name nameJP",
-                options: {sort: { isAlum:1 }}
+                options: {sort: { isActive:1 }}
             })
             .exec();
 
             // First talents, then alums
-            res.status(200).json(data);
+            return res.status(200).json(data);
         }catch(error){
-            res.status(400).json({ response:'Generations could not be found' });
+            return res.status(400).json({ response:'Generations could not be found' });
         }
     }
 
@@ -28,17 +28,17 @@ class GenerationDao {
         const exist = await GenerationSchema.findOne(params);
 
         if(exist){
-            res.status(400).json({ response:'The generation alredy exist' });
-        }else{
-            const myGeneration = new GenerationSchema(params);
-            myGeneration.save()
-            .then(() => {
-                res.status(200).json({ response:"Generation created", generation:myGeneration });
-            })
-            .catch(() => {
-                res.status(400).json({ response:"Error creating generation" });
-            });
+            return res.status(400).json({ response:'The generation alredy exist' });
         }
+
+        const myGeneration = new GenerationSchema(params);
+        myGeneration.save()
+        .then(() => {
+            return res.status(200).json({ response:"Generation created", generation:myGeneration });
+        })
+        .catch(() => {
+            return res.status(400).json({ response:"Error creating generation" });
+        });
     }
 
     // delete one generation
@@ -46,19 +46,19 @@ class GenerationDao {
         try{
             const del = await GenerationSchema.findByIdAndDelete(id).exec();
 
-            if(del){
-                // Removes the relation
-                await BranchSchema.updateMany({"generationsBranch": id},
-                                              {$pull: {"generationsBranch": id } });
-                // Eliminate all affiliated talents
-                await TalentSchema.deleteMany({_id: del.talentsGeneration}).exec();
-                
-                res.status(200).json({ response:'Generation deleted', deleted:del });
-            }else{
-                res.status(400).json({ response:'Generation could not be found' });
+            if(!del){
+                return res.status(400).json({ response:'Generation could not be found' });
             }
+
+            // Removes the relation
+            await BranchSchema.updateMany({"generationsBranch": id},
+                                          {$pull: {"generationsBranch": id } });
+            // Eliminate all affiliated talents
+            await TalentSchema.deleteMany({_id: del.talentsGeneration}).exec();
+
+            return res.status(200).json({ response:'Generation deleted', deleted:del });
         }catch(error){
-            res.status(400).json({ response:'Generation could not be eliminated' });
+            return res.status(400).json({ response:'Generation could not be eliminated' });
         }
     }
 
@@ -68,12 +68,12 @@ class GenerationDao {
             const upd = await GenerationSchema.findByIdAndUpdate(id, params, {new:true}).exec();
 
             if(upd){
-                res.status(200).json({ response:'Generation updated', updated:upd });
+                return res.status(200).json({ response:'Generation updated', updated:upd });
             }else{
-                res.status(400).json({ response:'Generation could not be found' });
+                return res.status(400).json({ response:'Generation could not be found' });
             }
         }catch(error){
-            res.status(400).json({ response:'Generation could not be updated' });
+            return res.status(400).json({ response:'Generation could not be updated' });
         }
     }
 
@@ -83,17 +83,17 @@ class GenerationDao {
             const data = await GenerationSchema.findOne({ "name": name })
             .populate({
                 path: "talentsGeneration",
-                options: {sort: { isAlum:1 }}
+                options: {sort: { isActive:1 }}
             })
             .exec();
 
-            if(data){
-                res.status(200).json(data);
-            }else{
-                res.status(400).json({ response:'The generation does not exist' });
+            if(!data){
+                return res.status(400).json({ response:'The generation does not exist' });
             }
+
+            return res.status(200).json(data);
         }catch(error){
-            res.status(400).json({ response:'Generation could not be found' });
+            return res.status(400).json({ response:'Generation could not be found' });
         }
     }
 };

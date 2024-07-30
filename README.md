@@ -10,7 +10,7 @@ This is the API of [Hololive Clone Interface](https://github.com/HAndres8/Hololi
 - _id: string
 - name: string
 - nameJP: string
-- isAlum: boolean
+- isActive: boolean
 - image: string
 
 ### Generations

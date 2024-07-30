@@ -1,4 +1,5 @@
 steps.txt
+context.txt
 variable.env
 build
 node_modules
