@@ -2,7 +2,7 @@
 
 This project was developed for educational purposes using Node.js and MongoDB. Contains information such as name, image, and whether the talent is active or not. All data in this API was taken from the original website, [Hololive Talent](https://hololive.hololivepro.com/en/talents).
 
-This is the API of [Hololive Clone Interface](https://github.com/HAndres8/Hololive-Clone-Interface).
+This is the API that provides all the available information for [Hololive Clone Interface](https://github.com/HAndres8/Hololive-Clone-Interface).
 
 ## Design
 
