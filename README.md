@@ -10,8 +10,9 @@ This is the API that provides all the available information for [Hololive Clone 
 - _id: string
 - name: string
 - nameJP: string
-- isActive: boolean
 - image: string
+- isActive: boolean
+- isAffiliate: boolean
 
 ### Generations
 - _id: string
