@@ -16,10 +16,14 @@ class TalentDao {
     // create one talent
     protected static async createTalents(params:any, res:Response):Promise<any> {
         const active = params.isActive;
+        const affil = params.isAffiliate;
         const exist = await TalentSchema.findOne(params);
 
         if(!active){
             return res.status(400).json({ response:'An inactive talent created for the first time is not allowed' });
+        }
+        if(affil){
+            return res.status(400).json({ response:'An affiliate talent created for the first time is not allowed' });
         }
         if(exist){
             return res.status(400).json({ response:'The talent alredy exist' });
@@ -57,14 +61,18 @@ class TalentDao {
     // update one talent
     protected static async updateTalents(id:any, params:any, res:Response):Promise<any> {
         try{
-            const upd = await TalentSchema.findByIdAndUpdate(id, params, {new:true}).exec();
-            const gen = await GenerationSchema.findOne({"talentsGeneration": id}).exec();
             const active = params.isActive;
-            
+            const affiliate = params.isAffiliate;
+            if(!active && affiliate){
+                return res.status(400).json({ response:'An inactive talent can not be affiliate' });
+            }
+
+            const upd = await TalentSchema.findByIdAndUpdate(id, params, {new:true}).exec();
             if(!upd){
                 return res.status(400).json({ response:'Talent could not be found' });
             }
 
+            const gen = await GenerationSchema.findOne({"talentsGeneration": id}).exec();
             if(!active && gen?.name!='staff'){
                 GenerationSchema.findOneAndUpdate({name: 'alum'},
                                                     {$push: {"talentsGeneration": id} }).exec();
@@ -72,6 +80,7 @@ class TalentDao {
                 GenerationSchema.findOneAndUpdate({name: 'alum'},
                                                     {$pull: {"talentsGeneration": id} }).exec();
             }
+            
             return res.status(200).json({ response:'Talent updated', updated:upd });
         }catch(error){
             return res.status(400).json({ response:'Talent could not be updated' });
